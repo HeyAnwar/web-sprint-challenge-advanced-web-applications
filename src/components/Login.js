@@ -1,15 +1,45 @@
-import React, { useEffect } from "react";
+import axios from "axios";
+import React, { useState } from "react";
+import { useHistory } from "react-router";
 
 const Login = () => {
+  const [userLogin, setUserLogin] = useState({
+    username: '',
+    password: ''
+  })
+
+  const [error, setError] = useState('')
+  const { push } = useHistory
+
+  const handleChanges = (e) => {
+    setUserLogin({...userLogin, [e.target.name]: e.target.value})
+  }
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    axios.post('http://localhost:5000/api/login', userLogin)
+    .then(res => {
+      console.log(res)
+      localStorage.setItem('token', res.data.payload)
+      push('/protected')
+    })
+    .catch(err => {
+      console.log(err)
+    })
+    if (userLogin.username === '' || userLogin.password === '') {
+      setError('Username or Password not valid.')
+    }else if(userLogin.username !== 'Lambda' || userLogin.password !== 'i<3Lambd4') {
+      setError('Username or Password not valid.')
+    }
+  }
   // make a post request to retrieve a token from the api
   // when you have handled the token, navigate to the BubblePage route
 
-  useEffect(()=>{
+  
     // make a post request to retrieve a token from the api
     // when you have handled the token, navigate to the BubblePage route
-  });
   
-  const error = "";
+  
   //replace with error state
 
   return (
@@ -17,6 +47,28 @@ const Login = () => {
       <h1>Welcome to the Bubble App!</h1>
       <div data-testid="loginForm" className="login-form">
         <h2>Build login form here</h2>
+        <form onSubmit={handleSubmit}>
+          <input 
+          data-testid='username'
+          name='username'
+          type='text'
+          placeholder='username'
+          value={userLogin.username}
+          onChange={handleChanges}
+          />
+          <br />
+          <input
+          data-testid='password'
+          name='password'
+          type='password'
+          placeholder='password'
+          value={userLogin.password}
+          onChange={handleChanges}
+          />
+        </form>
+        <button>
+          Login
+        </button>
       </div>
 
       <p data-testid="errorMessage" className="error">{error}</p>
