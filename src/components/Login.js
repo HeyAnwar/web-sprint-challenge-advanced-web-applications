@@ -21,15 +21,15 @@ const Login = () => {
     .then(res => {
       console.log(res)
       localStorage.setItem('token', res.data.payload)
-      push('/protected')
+      push('/bubblepage')
     })
     .catch(err => {
       console.log(err)
     })
     if (userLogin.username === '' || userLogin.password === '') {
       setError('Username or Password not valid.')
-    }else if(userLogin.username !== 'Lambda' || userLogin.password !== 'i<3Lambd4') {
-      setError('Username or Password not valid.')
+    }else if(userLogin.username === 'Lambda School' || userLogin.password === 'i<3Lambd4') {
+      localStorage.setItem('token', userLogin)
     }
   }
   // make a post request to retrieve a token from the api
@@ -46,7 +46,6 @@ const Login = () => {
     <div>
       <h1>Welcome to the Bubble App!</h1>
       <div data-testid="loginForm" className="login-form">
-        <h2>Build login form here</h2>
         <form onSubmit={handleSubmit}>
           <input 
           data-testid='username'
@@ -66,7 +65,7 @@ const Login = () => {
           onChange={handleChanges}
           />
         </form>
-        <button>
+        <button onClick={handleSubmit}>
           Login
         </button>
       </div>
